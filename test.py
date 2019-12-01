@@ -1,8 +1,7 @@
 import datetime
 
-a = '1-1.5万/月'
-if '万/月' in a:
-    a = a.replace('万/月', '').split('-')
-print(a)
-
+a = {'a':1,'b':2}
+keys = list(a.keys())
+values = list(a.values())
+print(keys,values)
 
