@@ -6,17 +6,17 @@
 class Easy_Analyze:
     def __init__(self, data_dict):
         self.data_dict = data_dict
-        self.result = {'职业': '', '城市': '', '总数': 0, '已处理数:': 0, '未处理数:': 0, '工资': []}
+        self.result = {'职业:': '', '城市:': '', '总数:': 0, '已处理数:': 0, '未处理数:': 0, '工资:': []}
         self.analyze()
 
     def analyze(self):
         for k, v in self.data_dict.items():
             for i in v:
-                self.result['城市'] = [i[7]]
-                self.result['工资'].append([i[3]])
-        self.result['总数'] = len(v)
-        self.result['职业'] = k
-        self.result['工资'] = self.class_salary(self.result['工资'])
+                self.result['城市:'] = [i[7]]
+                self.result['工资:'].append([i[3]])
+        self.result['总数:'] = len(v)
+        self.result['职业:'] = k
+        self.result['工资:'] = self.class_salary(self.result['工资:'])
         # print(self.result['工资'])
 
     # 按层级分类工资

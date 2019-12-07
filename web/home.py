@@ -61,13 +61,13 @@ def home():
 
 @web.route('/index')
 def show():
-    # result:{'职业': '', '城市': [''], '总数': , '已处理数:': , '未处理数:': , '工资': {}}
+    # result={'职业': '', '城市': [''], '总数': 0, '已处理数:': 0, '未处理数:': 0, '工资': {}}
     keys = list(result.keys())
     values = list(result.values())
 
     def bar(keys, values):
         '''
-        绘制柱状图时的数据分析
+        绘制柱状图前的数据整理
         :param keys: result的所有key
         :param values: result的所有value
         :return:return {'x': x坐标, 'y': y坐标, 'num': 数据条数, 'title': 图像标题, 'xlabel': x轴标题, 'ylabel': y轴标题}
@@ -80,9 +80,10 @@ def show():
         ylabel = '数量'
         return {'x': x, 'y': y, 'num': data_num, 'title': title, 'xlabel': xlabel, 'ylabel': ylabel}
 
-    bar_dict= bar(keys=keys, values=values)
-    Draw(bar_dict=bar_dict)
-    return render_template('index.html')
+    bar_dict = bar(keys=keys, values=values)
+    img_path = Draw(bar_dict=bar_dict).draw_bar()
+    return render_template('index.html', keys=keys, values=values, lenth=len(keys),
+                           img_path=img_path)
 
 
 @web.route('/find')
