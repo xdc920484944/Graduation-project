@@ -55,6 +55,7 @@ def find_mysql(web, occupation, city):
 # city表数据插入
 def insert_mysql_in_city():
     citys = Get_city()  # 数据插入
+    print(citys)
     for k, v in citys.items():
         params = City(city=k, code=v)
         wy_db.session.add(params)
@@ -64,7 +65,11 @@ def insert_mysql_in_city():
 
 # city表数据查询
 def find_mysql_in_city(city=''):
-    insert_mysql_in_city()
+    '''
+    传入城市名，在数据库中查询所对应的编号
+    :param city: 类型->str 城市名
+    :return:
+    '''
     result = City.query.filter(City.city == city).first()
     if result == None:
         return result

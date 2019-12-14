@@ -22,5 +22,5 @@ class City(wy_db.Model):
     __tablename__ = 'city'
     id = wy_db.Column(wy_db.Integer, primary_key=True, autoincrement=True)
     city = wy_db.Column(wy_db.String(100), nullable=True, unique=True)  # 城市名
-    code = wy_db.Column(wy_db.Integer, nullable=True, unique=True)  # 城市对应号码
+    code = wy_db.Column(wy_db.String(20), nullable=True, unique=True)  # 城市对应号码
     status = wy_db.Column(wy_db.Integer, default=1)  # 状态

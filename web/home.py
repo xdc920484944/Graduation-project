@@ -2,7 +2,7 @@ from flask import request, render_template, redirect
 
 from app.analyze.draw import Draw
 from app.analyze.easy_analyze import Easy_Analyze
-from app.forms.use_mysql import find_mysql, find_mysql_in_city, insert_mysql
+from app.controller.use_mysql import find_mysql, insert_mysql, find_mysql_in_city, insert_mysql_in_city
 from app.spider.lagou.main import get_data_lagou
 from app.spider.wuyou.main import get_data_wuyou
 from app.spider.zhilian.main import get_data_zhilian
@@ -16,20 +16,26 @@ def home():
         occupation = request.form['job']
         city = request.form['city']
 
-        # city_code = find_mysql_in_city(city)  # 城市代码查询
-        # if city_code == None:
-        #     print('该城市不存在，请重新输入')
-        #     return redirect('')
-        city_code = 1
+        def get_city_code(city):
+            # 城市代码查询
+            city_code = find_mysql_in_city(city)
+            return city_code
 
         if web == '51job':
-            data = find_mysql(web=web, occupation=occupation, city=city)  # 数据查询
+
+            # 数据查询
+            data = find_mysql(web=web, occupation=occupation, city=city)
+            #数据库中查询不到数据则爬取数据
             if data == []:
+                city_code = get_city_code(city)
+                if city_code == []:
+                    raise NameError('城市编号为空。错误原因:城市不存在或数据库中无数据')
                 print('无忧网数据爬取中.....')
                 data = get_data_wuyou(occupation=occupation, city=city, city_code=city_code)
                 insert_mysql(web=web, data=data)
                 global result
                 result = data
+            #数据库中存在数据则整理数据
             else:
                 print('调用数据库中的数据中....')
                 result = {occupation: []}
@@ -83,7 +89,7 @@ def show():
     bar_dict = bar(keys=keys, values=values)
     img_path = Draw(bar_dict=bar_dict).draw_bar()
     return render_template('index.html', keys=keys, values=values, lenth=len(keys),
-                           img_path=img_path)
+                           img_path=str(img_path))
 
 
 @web.route('/find')
@@ -97,6 +103,8 @@ def login():
     return render_template('login.html', form=form)
 
 
-@web.route('/register')
+@web.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        print(request.form)
     return render_template('register.html')

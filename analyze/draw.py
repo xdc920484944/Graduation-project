@@ -40,14 +40,3 @@ class Draw:
         img_path = os.path.join(self.dir_full, (H_M_S.replace(':', '-')+'.png'))
         plt.savefig(img_path)
         return img_path
-# x = [1, 2, 3, 4, 5, 6, 7, 8]
-# y = [1, 2, 3, 4, 5, 6, 7, 8]
-#
-# x2 = [1, 2, 3, 4, 5, 6, 7, 8]
-# y2 = [8, 7, 6, 5, 4, 3, 2, 1]
-#
-# plt.bar(x=x, height=y, width=0.4, )
-# plt.bar(x=[i + 0.5 for i in x2], height=y2, width=0.4)
-# plt.xlabel('x')
-# plt.ylabel('y')
-# plt.show()
