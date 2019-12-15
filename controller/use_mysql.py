@@ -43,12 +43,6 @@ def find_mysql(web, occupation, city):
         result = Lagou.query.filter(Lagou.key == occupation, Lagou.city == city).all()
     if web == 'zhilian':
         result = Zhilian.query.filter(Zhilian.key == occupation, Zhilian.city == city).all()
-
-    # if len(result) == 0:
-    #     print('数据库中找不到数据！')
-    #     return []
-    # else:
-    #     print('数据库中找到了数据！')
     return result
 
 

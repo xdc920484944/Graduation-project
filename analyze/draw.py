@@ -4,7 +4,7 @@ import time
 import matplotlib
 import matplotlib.pyplot as plt
 
-from app.setting import SAVE_IMG_PATH, Y_M_D, H_M_S
+from app.setting import SAVE_IMG_PATH
 
 matplotlib.rcParams['font.sans-serif'] = ['SimHei']
 matplotlib.rcParams['axes.unicode_minus'] = False
@@ -12,7 +12,8 @@ matplotlib.rcParams['axes.unicode_minus'] = False
 
 class Draw:
     def __init__(self, bar_dict):
-        self.dir_full = os.path.join(SAVE_IMG_PATH, Y_M_D)  # 本次图片要保存的文件夹路径
+        self.Y_M_D, self.H_M_S = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()).split(' ')
+        self.dir_full = os.path.join(SAVE_IMG_PATH, self.Y_M_D)  # 本次图片要保存的文件夹路径
         self.bar_dict = bar_dict
         self.make_dir()
 
@@ -31,12 +32,13 @@ class Draw:
         '''
         plt.bar(x=self.bar_dict['x'], height=self.bar_dict['y'],
                 width=0.4)
-        plt.title('查询条件为:' + self.bar_dict['title'])
+        plt.title(self.bar_dict['title'])
         plt.xlabel(self.bar_dict['xlabel'])
         plt.ylabel(self.bar_dict['ylabel'])
         for i in range(len(self.bar_dict['x'])):
             plt.text(x=self.bar_dict['x'][i], y=self.bar_dict['y'][i],
                      s=self.bar_dict['y'][i])
-        img_path = os.path.join(self.dir_full, (H_M_S.replace(':', '-')+'.png'))
+        img_path = os.path.join(self.dir_full, (self.H_M_S.replace(':', '-') + '.png'))
         plt.savefig(img_path)
+        plt.close()
         return img_path

@@ -86,7 +86,8 @@ class Easy_Analyze:
                     s = [float(s[0]) * 100 / 12, float(s[1]) * 100 / 12]
                 else:
                     undeal_salary.append(s)
-                deal_salary.append(s)
+                if len(s) == 2:
+                    deal_salary.append(s)
             else:
                 undeal_salary.append(s)
 
@@ -94,5 +95,4 @@ class Easy_Analyze:
 
 
 if __name__ == '__main__':
-    pass
-    # result = Easy_Analyze(data_dict=data_dict)
+    Easy_Analyze(data_dict='').transfroms_salary(salary_list=['1.5千以下/月'])
