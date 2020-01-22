@@ -15,6 +15,9 @@
 <body>
     <!-- main -->
     <div class="w3layouts-main">
+        {% for msg in get_flashed_messages() %}
+        <div>{{msg}}</div>
+        {% endfor %}
         <h1>徽章效果注册表单</h1>
         <div class="agilesign-form">
             <div class="agileits-top">
@@ -34,12 +37,10 @@
                         <label>密码</label>
                         <span></span>
                     </div>
-             
-                    <div class="wthree-text">
-                        <p>
-                            <input type="checkbox" id="brand" value="">
-                            <label for="brand"><span></span>同意用户协议</label>
-                        </p>
+                    <div class="styled-input w3ls-text">
+                        <input type="password" name="password2" required="">
+                        <label>再次输入密码</label>
+                        <span></span>
                     </div>
                     <div class="agileits-bottom">
                         <input type="submit" value="注册">

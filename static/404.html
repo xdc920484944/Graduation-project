@@ -3,19 +3,19 @@
 <head>
     < meta charset = “ utf-8” >
     <title>消失在宇宙星空中的404页面< /标题>
-<!--    <div href = “ {{url_for（ 'static'，filename ='404 / 404.css'）}}“ rel = ” stylesheet“ type = ” text / css“ > -->
+        <!--    <div href = “ {{url_for（ 'static'，filename ='404 / 404.css'）}}“ rel = ” stylesheet“ type = ” text / css“ > -->
     </title>
-< body >
-< ！-代码开始- >
-< div class = “ fullScreen” id = “ fullScreen” >
-    < img class = “ rotating” src = “ {{url_for（'static'，filename ='404 / spaceman.svg'）}}” >>
+    < body >
+    < ！-代码开始- >
+    < div class = “ fullScreen” id = “ fullScreen” >
+    < img class = “ rotating” src = “ {{ url_for（'static'，filename ='404 / spaceman.svg'）}}” >>
     < div 类= “pagenotfound文本” >
-        < H1 >迷失在太空中！< / H1 >
-        < H2 > < A HREF = “{{url_for（ 'home.index'）}}” >返回首页< / a > < /h2 >
+    < H1 >迷失在太空中！< / H1 >
+    < H2 > < A HREF = “{{ url_for（ 'home.index'）}}” >返回首页< / a > < /h2 >
     < / div >
     < canvas id = “ canvas2d” > < / canvas >
-< / div >
-<!--<div= “ text / javascript” src = “ {{url_for（'static'，filename ='404 / spaceman.svg “）}}” > < /脚本> -->
+    < / div >
+    <!--<div= “ text / javascript” src = “ {{ url_for（'static'，filename ='404 / spaceman.svg “）}}” > < /脚本> -->
 < ！-代码结束- >
 < /正文>
 < / html >

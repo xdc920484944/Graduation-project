@@ -1,15 +1,58 @@
 # 表层数据分析
 
 # 需要得到的数据格式:{查询的职业:[详细职业名，公司名，详细地址，工资，时间，招聘URL，公司URL，城市]}
+import jieba
 
 
-class Easy_Analyze:
-    def __init__(self, data_dict):
-        self.data_dict = data_dict
+class Data_Analyze:
+    def __init__(self):
+        '''
+        分类传入的数据
+        :param data_dict:
+        :return result:{已处理数:[],未处理数:[]}
+        '''
         self.result = {'职业:': '', '城市:': '', '总数:': 0, '已处理数:': 0, '未处理数:': 0, '工资:': []}
-        self.analyze()
 
-    def analyze(self):
+    def deal_data_freq(self, texts):
+        _list = list(jieba.cut(texts))
+        _set = set(_list)
+        word_dict = {}
+        for i in _set:
+            num = _list.count(i)
+            if num >= 5:
+                word_dict[i] = num
+        print(word_dict)
+        return word_dict
+
+    def key_word_freq(self, data_str):
+        '''
+        职位需求关键字分析(词频统计)
+        :param data_str:
+        :return: dict
+        '''
+        loss_list = ['等', '、', '\n', '\t', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '的', '和', '：', '，', '.',
+                     '。', '与', '/', ' ', ')', '；', '有', '公司']
+        get_list = ['python', '经验', 'Linux', 'PaaS', 'IaaS', 'django', 'Javascript', 'CSS', 'html', 'Bootstrap',
+                    'Jquery ',
+                    'github', 'XPath', 'HTTP', 'TCP', 'IP', '爬虫', 'scrapy', 'pyspider', 'MySQL', 'Redis', 'MongoDB',
+                    '学历',
+                    'web', 'BUG', 'SQL', '正则', 'flask', 'tornado', 'redis', '线程']
+        text = data_str
+        _set = set(list(jieba.cut(text)))
+        word_dict = {}
+        for i in _set:
+            num = list(jieba.cut(text)).count(i)
+            if num >= 5 and i not in loss_list:
+                word_dict[i] = num
+        return word_dict
+
+    def sort_salary(self, data_dict):
+        '''
+        工资分级
+        :param data_dict:
+        :return:
+        '''
+        self.data_dict = data_dict
         for k, v in self.data_dict.items():
             for i in v:
                 self.result['城市:'] = [i[7]]
@@ -17,16 +60,17 @@ class Easy_Analyze:
         self.result['总数:'] = len(v)
         self.result['职业:'] = k
         self.result['工资:'] = self.class_salary(self.result['工资:'])
-        # print(self.result['工资'])
+        return self.result
 
-    # 按层级分类工资
     def class_salary(self, salary_list):
+        '''
+        按层级分类工资
+        :param salary_list: 工资列表
+        :return: dict
+        '''
         deal_salaly, undeal_salary = self.transfroms_salary(salary_list)
         self.result['已处理数:'] = len(deal_salaly)
         self.result['未处理数:'] = len(undeal_salary)
-        # print('无法处理的数据法解析的工资数据:', undeal_salary)
-        # print('解析后的工资数据:', deal_salaly)
-
         salary_level = {'低于3000/月': 0, '3000-6000/月': 0, '6000-9000/月': 0, '9000-12000/月': 0, '1.2W-2W/月': 0,
                         '2W-5W/月': 0, '5W-10W/月': 0, '大于10W/月': 0}
         for s in deal_salaly:
@@ -50,9 +94,9 @@ class Easy_Analyze:
 
         return salary_level
 
-    # 把工资格式全部转换为千/月
     def transfroms_salary(self, salary_list):
         '''
+        把工资格式全部转换为千/月
         :param salary_list:
         :return: 处理后的工资:deal_salary   无法处理的数据:undeal_salary
         '''
@@ -95,4 +139,4 @@ class Easy_Analyze:
 
 
 if __name__ == '__main__':
-    Easy_Analyze(data_dict='').transfroms_salary(salary_list=['1.5千以下/月'])
+    Data_Analyze(data_dict='').transfroms_salary(salary_list=['1.5千以下/月'])

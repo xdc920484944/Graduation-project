@@ -1,4 +1,5 @@
 from app.models.lagou import lg_db
+from app.models.user import user_db
 from app.models.wuyou import wy_db
 from app.models.zhilian import zl_db
 
@@ -14,5 +15,7 @@ def creat_db(app):
     lg_db.create_all(app=app, bind='lagou')
     zl_db.init_app(app)
     zl_db.create_all(app=app, bind='zhilian')
+    user_db.init_app(app)
+    user_db.create_all(app=app, bind='user')
     # bs_db.init_app(app)
     # bs_db.create_all(all=app)

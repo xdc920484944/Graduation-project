@@ -4,6 +4,7 @@ from app.setting import MAX_PAGE
 from app.spider.wuyou.get_imformation import Get_imformation
 from app.spider.wuyou.get_page import Get_page
 
+
 def get_data_wuyou(occupation, city, city_code=''):
     '''
     爬取无忧网数据
@@ -19,13 +20,14 @@ def get_data_wuyou(occupation, city, city_code=''):
         data = {}
         data[occupation] = []
         for i in range(page):
-            url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,{}.html?'.format(city_code, occupation, i + 1)
+            url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,{}.html?'.format(city_code, occupation,
+                                                                                              i + 1)
             for k in Get_imformation(url):
                 k.append(city)
                 data[occupation].append(k)
+        return data
     except:
-        print(url)
-    return data
+        print('数据爬取出错:', url)
 
 
 if __name__ == '__main__':

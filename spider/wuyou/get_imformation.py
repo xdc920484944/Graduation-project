@@ -31,3 +31,8 @@ def Get_imformation(url):
         data.append([occupation, company_name, address, salary, release_time, occupation_href, company_href])
 
     return data
+
+
+if __name__ == "__main__":
+    url = "https://search.51job.com/list/020000,000000,0000,00,9,99,java,2,1.html"
+    print(Get_imformation(url))

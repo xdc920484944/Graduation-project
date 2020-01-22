@@ -1,6 +1,4 @@
-import time
-
-times = time.strftime("%Y-%m-%d", time.localtime())
-for _ in range(2):
-    filename = time.time()
-    print(filename)
+import jieba
+a = '爱上帝派文人'
+b = list(jieba.cut(a))
+print(b)
