@@ -1,38 +1,37 @@
-from pprint import pprint
-
-from app.setting import MAX_PAGE
+from app.controller.use_mysql import find_mysql_in_city
 from app.spider.wuyou.get_imformation import Get_imformation
 from app.spider.wuyou.get_page import Get_page
 
 
-def get_data_wuyou(occupation, city, city_code=''):
+def get_data_wuyou(web, key, city):
     '''
     爬取无忧网数据
-    数据格式:{查询的职业:[查询的城市, 详细职业名，公司名，地址，工资，时间，招聘URL，公司URL，城市CODE]}
-    :param occupation: 职位
+    :param web: 网站
+    :param key: 职位
     :param city: 城市
-    :param city_code:城市代码
-    :return:
+    :return:    dict 数据格式:{职业:[[职业名，公司名，地址，工资，发布时间，职位URL，公司URL，城市],[],.....]}
     '''
+    code = find_mysql_in_city(web=web, city=city)
+    if code == [] or code == '':
+        raise NameError('城市编号为空。错误原因:1、城市不存在\n2、数据库中无数据')
+    url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,1.html?'.format(code, key)
+    page = Get_page(url)
     try:
-        url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,1.html?'.format(city_code, occupation, )
-        page = Get_page(url)
         data = {}
-        data[occupation] = []
+        data[key] = []
         for i in range(page):
-            url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,{}.html?'.format(city_code, occupation,
-                                                                                              i + 1)
+            url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,{}.html?'.format(code, key, i + 1)
             for k in Get_imformation(url):
                 k.append(city)
-                data[occupation].append(k)
+                data[key].append(k)
         return data
     except:
         print('数据爬取出错:', url)
 
 
 if __name__ == '__main__':
-    occupation = '司机'
+    job = '司机'
     city_code = '010000'
     city = '北京'
-    data = get_data_wuyou(occupation=occupation, city_code=city_code, city=city)
+    data = get_data_wuyou(job=job, city_code=city_code, city=city)
     print(data)

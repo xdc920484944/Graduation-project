@@ -14,36 +14,37 @@ class Data_Analyze:
         self.result = {'职业:': '', '城市:': '', '总数:': 0, '已处理数:': 0, '未处理数:': 0, '工资:': []}
 
     def deal_data_freq(self, texts):
-        _list = list(jieba.cut(texts))
-        _set = set(_list)
-        word_dict = {}
-        for i in _set:
-            num = _list.count(i)
-            if num >= 5:
-                word_dict[i] = num
-        print(word_dict)
-        return word_dict
-
-    def key_word_freq(self, data_str):
         '''
-        职位需求关键字分析(词频统计)
-        :param data_str:
-        :return: dict
+        将职位内容以精准模式切片
+        :param texts:str
+        :return:dict {k1:v1, k2:v2, ...}
         '''
         loss_list = ['等', '、', '\n', '\t', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '的', '和', '：', '，', '.',
-                     '。', '与', '/', ' ', ')', '；', '有', '公司']
-        get_list = ['python', '经验', 'Linux', 'PaaS', 'IaaS', 'django', 'Javascript', 'CSS', 'html', 'Bootstrap',
-                    'Jquery ',
-                    'github', 'XPath', 'HTTP', 'TCP', 'IP', '爬虫', 'scrapy', 'pyspider', 'MySQL', 'Redis', 'MongoDB',
-                    '学历',
-                    'web', 'BUG', 'SQL', '正则', 'flask', 'tornado', 'redis', '线程']
-        text = data_str
-        _set = set(list(jieba.cut(text)))
+                     '。', '与', '/', ' ', ')', '；', '有', '公司', ':', '\xa0', '及', '）', '以上', '-']
+        eng_list = ['PYTHON', 'LINUX', 'HBASE', 'IAAS', 'DJANGO', 'JAVASCRIPT', 'CSS', 'HTML', 'BOOTSTRAP', 'JQUERY ',
+                    'GITHUB', 'XPATH', 'HTTP', 'TCP', 'IP', 'SCRAPY', 'PYSPIDER', 'MYSQL', 'REDIS', 'MONGODB', 'WEB',
+                    'BUG', 'SQL', 'FLASK', 'TORNADO', 'REDIS', 'HTML', 'JAVASCRIPT', 'CSS']
+
+        chi_list = ['经验', '爬虫', '学历', '正则', '线程']
+        _list = list(jieba.cut(texts))
+        _set = set(_list)
+        _dict = {}
         word_dict = {}
         for i in _set:
-            num = list(jieba.cut(text)).count(i)
-            if num >= 5 and i not in loss_list:
-                word_dict[i] = num
+            k = i.upper() if i.isalpha() else i
+            num = _list.count(i)
+            if k in eng_list or k in chi_list:
+                _dict[i] = num
+            elif num >= 6 and i not in loss_list:
+                _dict[i] = num
+
+        keys = list(_dict.keys())
+        values = list(_dict.values())
+        word_dict['x'] = keys
+        word_dict['y'] = values
+        word_dict['title'] = '词频分析结果'
+        word_dict['xlabel'] = '词名'
+        word_dict['ylabel'] = '次数'
         return word_dict
 
     def sort_salary(self, data_dict):

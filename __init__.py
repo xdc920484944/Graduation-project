@@ -16,7 +16,6 @@ def creat_app():
 
 
     # 蓝图注册
-    # app.register_blueprint(admin)
     app.register_blueprint(web)
 
     return app

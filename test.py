@@ -1,4 +1,3 @@
-import jieba
-a = '爱上帝派文人'
-b = list(jieba.cut(a))
-print(b)
+a = [1,2]
+a.pop(-1)
+print(a)

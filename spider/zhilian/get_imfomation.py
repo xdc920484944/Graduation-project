@@ -7,6 +7,7 @@ from app.spider.zhilian.get_page import get_page
 
 def get_imfomation(driver, city, occupation):
     url = 'https://sou.zhaopin.com/?jl={}&sf=0&st=0&kw={}&kt=3'.format(city, occupation)
+    print(url)
     driver.get(url)
     close_fram(driver, '/html/body/div[2]/div/div/button')    #关闭弹窗
     driver.get(url)

@@ -3,26 +3,22 @@
 {% block title %}首页{% endblock %}
 
 {% block page_content %}
-    <table class="table table-bordered">
-{#    <tr>#}
-{#        <th>用户ID</th>#}
-{#        <th>公司ID</th>#}
-{#        <th>公司名称</th>#}
-{#        <th>联系电话</th>#}
-{#        <th>联系邮箱</th>#}
-{#        <th>用户姓名</th>#}
-{#        <th>所属公司</th>#}
-{#    </tr>#}
+    <table class="salary">
+        <img border="0" src={{ img_path }} alt="picture" width="900" height="500">
         {% for i in range(lenth) %}
             <tr>
                 <td>{{ keys[i],values[i] }}</td>
-{#                <td>{{ u[2] }}</td>#}
-{#                <td>{{ u[3] }}</td>#}
-{#                <td>{{ u[4] }}</td>#}
-{#                <td>{{ u[5] }}</td>#}
             </tr>
         {% endfor %}
-    <img border="0" src={{ img_path }} alt="picture" width="300" height="300">
+    </table>
+
+    <table class="frequency">
+        <img border="0" src={{ freq_img_path }} alt="picture" width="900" height="500">
+        {% for f in range(freq_lenth) %}
+            <tr>
+                <td>{{ freq_keys[f],freq_values[f] }}</td>
+            </tr>
+        {% endfor %}
     </table>
 
 {% endblock %}

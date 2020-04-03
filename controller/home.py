@@ -1,6 +1,5 @@
-from app import spider
-from app.controller.use_mysql import find_mysql_in_city, find_mysql, insert_mysql
-
+from app.controller.use_mysql import find_mysql, insert_mysql, insert_mysql_in_city
+from app.spider import SPIDER
 
 
 class HOME:
@@ -13,26 +12,27 @@ class HOME:
 
     def home(self):
         web = self.form['web']
-        occupation = self.form['job']
+        key = self.form['key']
         city = self.form['city']
 
+        # 城市表插入数据
+        # print('城市及对应代码爬取中....')
+        # result = SPIDER(web=web).get_city()
+        # insert_mysql_in_city(web=web, result=result)
+        # print('城市及对应代码爬取完毕!')
+
         # 数据库中查询数据
-        data = find_mysql(web=web, occupation=occupation, city=city)
-        if data != []:
-            print('数据库中存在数据....')
-            result = {occupation: []}
-            # 整理数据格式
-            for d in range(len(data)):
-                result[occupation].append([data[d].occupation, data[d].company_name,
-                                           data[d].address, data[d].salary, data[d].release_time, data[d].occ_href,
-                                           data[d].com_href, data[d].city])
-        else:
-            print('%s爬取中.....' % web)
-            data = spider.SPIDER(web=web, occupation=occupation, city=city).data
-            if len(data) != 0:
-                insert_mysql(web=web, data=data)
-                result = data
-            else:
-                raise NameError('查询到的数据为空。错误原因:1、输入的职位不正确\n2、城市不存在\n3、没有该招聘信息')
-        print('源数据:', result)
-        return result
+        data = find_mysql(web=web, job=key, city=city)
+        # if web == '51job':
+        page = SPIDER(web=web, key=key, city=city).get_page()
+        for values in list(data.values()):
+            print('数据库中数据数:', len(values))
+            if len(values) <= 300 or len(values) <= (page - 1) * 50:
+                print('%s爬取中.....' % web)
+                data = SPIDER(web=web, key=key, city=city).get_data()
+                # print('爬虫结果:', len(data), data)
+                if list(data.values()):
+                    insert_mysql(web=web, data=data)
+                else:
+                    raise NameError('查询到的数据为空。错误原因:1、输入的职位不正确\n2、城市不存在\n3、没有该招聘信息')
+        return data
