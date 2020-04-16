@@ -46,7 +46,7 @@ def Get_imformation(driver):
 
     job_imf = driver.find_elements_by_xpath('//li[@class="job_item clearfix"]/div[@class="item_con job_title"]')
     job_hrefs = driver.find_elements_by_xpath(
-        '//li[@class="job_item clearfix"]/div[@class="item_con job_title"]/div/a')
+        '//li[@class="job_item clearfix"]/div[@class="item_con job_title"]//a')
     com_imf = driver.find_elements_by_xpath('//li[@class="job_item clearfix"]/div[@class="item_con job_comp"]')
     com_hrefs = driver.find_elements_by_xpath(
         '//li[@class="job_item clearfix"]/div[@class="item_con job_comp"]/div[@class="comp_name"]/a')
@@ -59,14 +59,15 @@ def Get_imformation(driver):
             job_name = job[0]  # 职位名
             salary = job[1]  # 薪资
             welfare = ''.join(j + '/' for j in job[2:])  # 福利
-            com_name = re.findall('(.*) ', com[0])[0]  # 公司名
+            # com_name = re.findall('(.*) ', com[0])[0]  # 公司名
+            com_name = com[0]  # 公司名
             require = com[1].replace(' ', '')  # 要求
             release_time = change_date(date[n].text)  # 发布时间
             job_href = job_hrefs[n].get_attribute('href')  # 职位链接
             com_href = com_hrefs[n].get_attribute('href')  # 公司链接
             data.append([job_name, com_name, salary, release_time, job_href, com_href, welfare, require])
         except Exception as e:
-            print('数据爬取错误:', e)
+            print('数据爬取错误:', e, 'job:', job, 'com:',com)
             continue
 
     return data

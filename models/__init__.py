@@ -12,8 +12,8 @@ def creat_db(app):
     '''
     wy_db.init_app(app)
     wy_db.create_all(app=app)
-    lg_db.init_app(app)
-    lg_db.create_all(app=app, bind='lagou')
+    # lg_db.init_app(app)
+    # lg_db.create_all(app=app, bind='lagou')
     zl_db.init_app(app)
     zl_db.create_all(app=app, bind='zhilian')
     user_db.init_app(app)

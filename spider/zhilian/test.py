@@ -1,0 +1,28 @@
+'''
+[
+    {'JobID': 4276413,
+     'JobTitle': '赴日Python',
+     'ReferrerType': 1,
+     'CompanyName': '某日本本土IT企业',
+     'AnnualSalaryMin': 18,
+     'AnnualSalaryMax': 40,
+     'JobLactionStr': '亚洲-日本',
+     'JobLactionID': [951, 505],
+     'JobTags': ['交通补助', '出国机会'],
+     'JobDegree': '大专',
+     'JobDegreeId': 0,
+     'WorkExperience': '1 年以上',
+     'WorkExperienceID': 0,
+     'CompanyIndustry': '',
+     'CompanyIndustryID': [210500, 160400],
+     'CompanyType': '其它', 'CompanyTypeID': 0,
+     'PublishDate': '2020-04-10',
+     'CompanyScale': '20-99人',
+     'SalaryWhite': 0,
+     'CompanyLogo': '',
+     'HunterName': '刘冬雪',
+     'HunterImg': 'https://photos.highpin.cn/Home/GetFile/5698278e-d3be-45e7-8d33-9d7a6aa81fd9',
+     'HunterJobTitel': '顾问',
+     'HunterCompany': '大连心逸网络科技有限公司'},
+]
+'''

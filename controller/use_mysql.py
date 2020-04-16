@@ -1,7 +1,7 @@
 # 无忧数据库操作
 import time
 
-from app.models import tc_db
+from app.models import tc_db, zl_db
 from app.models.tc import Tc
 from app.models.wuyou import Wuyou, wy_db, Job, Company
 
@@ -11,7 +11,11 @@ from app.models.wuyou import Wuyou, wy_db, Job, Company
 
 # 51数据格式：{搜索关键字:[职位，公司名字，地点，薪资，发布时间，职位链接，公司链接, 城市], [...]}
 # tc数据格式：{搜索关键字:[[职位名(0),公司名(1),薪资(2),发布时间(3),职位链接(4),公司链接(5),福利(6),要求(7),城市(8)], [],...]}
+# zl数据格式: {'搜索职位':[[职位名0,公司名1,地址2,学历要求3,工作经验4,所在行业5,发布时间6,公司规模7,],[]]}
 # data表-插入
+from app.models.zhilian import Zhilian
+
+
 def insert_mysql(web, data):
     for k, v in data.items():
         for i in v:
@@ -27,6 +31,11 @@ def insert_mysql(web, data):
                                 occ_href=i[4], com_href=i[5], welfare=i[6], require=i[7])
                     wy_db.session.add(params)
                     wy_db.session.commit()
+                if web == 'zhilian':
+                    params = Zhilian(key=k, occupation=i[0], company_name=i[1], address=i[2], job_degree=i[3],
+                                     epx=i[4], industry=i[5], release_time=i[6], com_model=i[7])
+                    zl_db.session.add(params)
+                    zl_db.session.commit()
             except Exception as e:
                 print('数据库数据插入错误:', i, e)
 
@@ -40,8 +49,10 @@ def find_mysql(web, job, city):
     result = {}
     if web == '51job':
         result[job] = Wuyou.query.filter(Wuyou.key == job, Wuyou.city == city, Wuyou.status == 1).all()
-    if web == 'tc':
+    elif web == 'tc':
         result[job] = Tc.query.filter(Tc.key == job, Tc.city == city, Tc.status == 1).all()
+    elif web == 'zhilian':
+        result[job] = Zhilian.query.filter(Zhilian.key == job, Zhilian.status == 1).all()
     r_to_d = result_to_data(web=web, result=result)  # 将数据库中查到的数据转换为字典格式
     data, old_data = Filter_Data.filter_time(web=web, data=r_to_d)  # 过滤超过期限数据
     if len(old_data[job]) > 0:
@@ -154,9 +165,15 @@ def insert_mysql_in_city(web, result):
     if web == 'tc':
         from app.models.tc import City
         for k, v in result.items():
-            params = City(city=k, href=v[0], code=v[1], status=1)
+            params = City(city=k, href=v[0], code=v[1])
             tc_db.session.add(params)
             tc_db.session.commit()
+    if web == 'zhilian':
+        from app.models.zhilian import City
+        for k, v in result.items():
+            params = City(city=k, href=v[0], code=v[1])
+            zl_db.session.add(params)
+            zl_db.session.commit()
     print('city表数据插入完成!')
 
 
@@ -207,15 +224,19 @@ def result_to_data(web, result):
             for v in values:
                 data[key].append([v.occupation, v.company_name, v.address, v.salary,
                                   v.release_time, v.occ_href, v.com_href, v.city])
-
-    # tc数据格式：{搜索关键字:[职位, 公司名, 薪资, 发布时间, 职位链接, 公司链接, 福利, 要求, 城市], []}
-    if web == 'tc':
+    elif web == 'tc':
         for key, values in result.items():
             data = {key: []}
             for v in values:
                 data[key].append(
-                    [v.occupation, v.company_name, v.salary, v.release_time, v.occ_href, v.com_href, v.welfare, v.req,
+                    [v.occupation, v.company_name, v.salary, v.release_time, v.occ_href, v.com_href, v.welfare, v.require,
                      v.city])
+    elif web == 'zhilian':
+        for key, values in result.items():
+            data = {key: []}
+            for v in values:
+                data[key].append(
+                    [v.occupation, v.company_name, v.address, v.epx, v.industry, v.release_time, v.com_model, v.city])
 
     return data
 

@@ -28,6 +28,8 @@ class SPIDER:
             data = get_data_wuyou(web=self.web, key=self.key, city=self.city)
         if self.web == 'tc':
             data = get_data_tc(web=self.web, key=self.key, city=self.city)
+        if self.web == 'zhilian':
+            data = get_data_zhilian(key=self.key)
         return data
 
     def get_job_content(self, web, data):
@@ -44,6 +46,7 @@ class SPIDER:
             driver = creat_driver()
             code = find_mysql_in_city(web=self.web, city=self.city)
             url = 'https://{}.58.com/job/pn{}/?key={}&classpolicy=job_A&final=1&jump=1'.format(code, 1, self.key)
+            print(url)
             driver.get(url=url)
             page = Get_page(driver)
             driver.close()
@@ -55,7 +58,9 @@ class SPIDER:
         elif self.web == 'tc':
             from app.spider.tc.get_city import Get_city
             return Get_city()
-
+        elif self.web == 'zhilian':
+            from app.spider.zhilian.get_city import Get_city
+            return Get_city()
 
 if __name__ == "__main__":
     a = SPIDER(web='tc').get_city()

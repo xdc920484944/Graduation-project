@@ -23,8 +23,8 @@ class HOME:
 
         # 数据库中查询数据
         data = find_mysql(web=web, job=key, city=city)
-        # if web == '51job':
-        page = SPIDER(web=web, key=key, city=city).get_page()
+        if web != 'zhilian':
+            page = SPIDER(web=web, key=key, city=city).get_page()
         for values in list(data.values()):
             print('数据库中数据数:', len(values))
             if len(values) <= 300 or len(values) <= (page - 1) * 50:

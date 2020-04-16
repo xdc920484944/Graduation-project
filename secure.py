@@ -1,7 +1,7 @@
 DEBUG = True
 
 SQLALCHEMY_BINDS = {  # 多数据库导入
-    'lagou': 'mysql+cymysql://root:@localhost/lagou',
+    # 'lagou': 'mysql+cymysql://root:@localhost/lagou',
     'zhilian': 'mysql+cymysql://root:@localhost/zhilian',
     'user': 'mysql+cymysql://root:@localhost/user',
     'tc': 'mysql+cymysql://root:@localhost/tc',
