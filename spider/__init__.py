@@ -39,6 +39,7 @@ class SPIDER:
     def get_page(self):
         if self.web == '51job':
             from app.spider.wuyou.get_page import Get_page
+            # url = 'https://search.51job.com/list/{},000000,0000,00,9,99,{},2,1.html?'.format(code, self.city)
             page = Get_page()
         elif self.web == 'tc':
             from app.spider.tc.get_page import Get_page

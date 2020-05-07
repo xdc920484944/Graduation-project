@@ -3,11 +3,7 @@ import time
 
 from app.models import tc_db, zl_db
 from app.models.tc import Tc
-from app.models.wuyou import Wuyou, wy_db, Job, Company
-
-
-# from app.spider.wuyou.get_city import Get_city
-
+from app.models.wuyou import Wuyou, wy_db, Company
 
 # 51数据格式：{搜索关键字:[职位，公司名字，地点，薪资，发布时间，职位链接，公司链接, 城市], [...]}
 # tc数据格式：{搜索关键字:[[职位名(0),公司名(1),薪资(2),发布时间(3),职位链接(4),公司链接(5),福利(6),要求(7),城市(8)], [],...]}
@@ -39,7 +35,7 @@ def insert_mysql(web, data):
             except Exception as e:
                 print('数据库数据插入错误:', i, e)
 
-    print('city表数据插入完成！')
+    print('data表数据插入完成！')
     # return data
 
 
@@ -56,7 +52,7 @@ def find_mysql(web, job, city):
     r_to_d = result_to_data(web=web, result=result)  # 将数据库中查到的数据转换为字典格式
     data, old_data = Filter_Data.filter_time(web=web, data=r_to_d)  # 过滤超过期限数据
     if len(old_data[job]) > 0:
-        print('old_data:', old_data)
+        # print('old_data:', old_data)
         occ_list = [x[5] for x in list(old_data.values())[0]]
         alter_mysql(web=web, occ_list=occ_list)
     return data
@@ -69,7 +65,7 @@ def alter_mysql(web, occ_list):
             param = Wuyou.query.filter(Wuyou.occ_href == url, Wuyou.status == 1).first()
             param.status = -1
             wy_db.session.commit()
-    print('data表数据软删除成功!数量为:', len(occ_list))
+    print('data表删除的过期数据数量为:', len(occ_list))
 
 
 # 职位表插入
@@ -81,6 +77,7 @@ def insert_mysql_in_job(web, data):
     '''
     for k in data:
         if web == '51job':
+            from app.models.wuyou import Job
             params = Job(url=k, request=data[k][0], welfare=data[k][1], content=data[k][2])
             wy_db.session.add(params)
             wy_db.session.commit()
@@ -97,6 +94,17 @@ def find_mysql_in_job(web, url_list):
     '''
     result = []
     if web == '51job':
+        from app.models.wuyou import Job
+        urls = []
+        result = []
+        for url in url_list:
+            res = (Job.query.filter(Job.url == url, Job.status == 1).first())
+            if res:
+                result.append(res)
+            else:
+                urls.append(url)
+    if web == 'tc':
+        from app.models.tc import Job
         urls = []
         result = []
         for url in url_list:
@@ -229,7 +237,8 @@ def result_to_data(web, result):
             data = {key: []}
             for v in values:
                 data[key].append(
-                    [v.occupation, v.company_name, v.salary, v.release_time, v.occ_href, v.com_href, v.welfare, v.require,
+                    [v.occupation, v.company_name, v.salary, v.release_time, v.occ_href, v.com_href, v.welfare,
+                     v.require,
                      v.city])
     elif web == 'zhilian':
         for key, values in result.items():

@@ -1,17 +1,17 @@
-# 表层数据分析
-
-# 需要得到的数据格式:{查询的职业:[详细职业名，公司名，详细地址，工资，时间，招聘URL，公司URL，城市]}
 import jieba
 
-
+# 表层数据分析
+# 需要得到的数据格式:{查询的职业:[职业名，公司名，详细地址，工资，时间，招聘URL，公司URL，城市]}
+# {搜索关键字:[[职位名(0),公司名(1),薪资(2),发布时间(3),职位链接(4),公司链接(5),福利(6),要求(7),城市(8)], [],...]}
 class Data_Analyze:
-    def __init__(self):
+    def __init__(self, web):
         '''
         分类传入的数据
         :param data_dict:
         :return result:{已处理数:[],未处理数:[]}
         '''
         self.result = {'职业:': '', '城市:': '', '总数:': 0, '已处理数:': 0, '未处理数:': 0, '工资:': []}
+        self.web = web
 
     def deal_data_freq(self, texts):
         '''
@@ -53,11 +53,15 @@ class Data_Analyze:
         :param data_dict:
         :return:
         '''
-        self.data_dict = data_dict
-        for k, v in self.data_dict.items():
-            for i in v:
-                self.result['城市:'] = [i[7]]
-                self.result['工资:'].append([i[3]])
+        for k, v in data_dict.items():
+            if self.web == '51job':
+                for i in v:
+                    self.result['城市:'] = [i[7]]
+                    self.result['工资:'].append([i[3]])
+            elif self.web == 'tc':
+                for i in v:
+                    self.result['城市:'] = [i[8]]
+                    self.result['工资:'].append([i[2]])
         self.result['总数:'] = len(v)
         self.result['职业:'] = k
         self.result['工资:'] = self.class_salary(self.result['工资:'])
@@ -92,7 +96,6 @@ class Data_Analyze:
                 salary_level['5W-10W/月'] += 1
             elif average_salary < 200:
                 salary_level['大于10W/月'] += 1
-
         return salary_level
 
     def transfroms_salary(self, salary_list):
@@ -106,33 +109,41 @@ class Data_Analyze:
         for s in salary_list:
             if type(s) is list and type(s[0]) is str:
                 s = s[0]
-                if s is None:
-                    undeal_salary.append(s)
-                elif '元/天' in s:
-                    s = s.replace('元/天', '')
-                    s = [float(s[0]) / 1000 * 30, float(s[0]) / 1000 * 30]
-                elif '千/月' in s:
-                    s = s.replace('千/月', '').split('-')
-                    s = [float(s[0]), float(s[1])]
-                elif '万/月' in s:
-                    s = s.replace('万/月', '').split('-')
-                    s = [float(s[0]) * 10, float(s[1]) * 10]
-                elif '十万/月' in s:
-                    s = s.replace('十万/月', '').split('-')
-                    s = [float(s[0]) * 100, float(s[1]) * 100]
-                elif '千/年' in s:
-                    s = s.replace('千/年', '').split('-')
-                    s = [float(s[0]) / 12, float(s[1]) / 12]
-                elif '万/年' in s:
-                    s = s.replace('万/年', '').split('-')
-                    s = [float(s[0]) / 1.2, float(s[1]) / 1.2]
-                elif '十万/年' in s:
-                    s = s.replace('十万/年', '').split('-')
-                    s = [float(s[0]) * 100 / 12, float(s[1]) * 100 / 12]
-                else:
-                    undeal_salary.append(s)
-                if len(s) == 2:
-                    deal_salary.append(s)
+                if self.web == '51job':
+                    if s is None:
+                        undeal_salary.append(s)
+                    elif '元/天' in s:
+                        s = s.replace('元/天', '')
+                        s = [float(s[0]) / 1000 * 30, float(s[0]) / 1000 * 30]
+                    elif '千/月' in s:
+                        s = s.replace('千/月', '').split('-')
+                        s = [float(s[0]), float(s[1])]
+                    elif '万/月' in s:
+                        s = s.replace('万/月', '').split('-')
+                        s = [float(s[0]) * 10, float(s[1]) * 10]
+                    elif '十万/月' in s:
+                        s = s.replace('十万/月', '').split('-')
+                        s = [float(s[0]) * 100, float(s[1]) * 100]
+                    elif '千/年' in s:
+                        s = s.replace('千/年', '').split('-')
+                        s = [float(s[0]) / 12, float(s[1]) / 12]
+                    elif '万/年' in s:
+                        s = s.replace('万/年', '').split('-')
+                        s = [float(s[0]) / 1.2, float(s[1]) / 1.2]
+                    elif '十万/年' in s:
+                        s = s.replace('十万/年', '').split('-')
+                        s = [float(s[0]) * 100 / 12, float(s[1]) * 100 / 12]
+                    else:
+                        undeal_salary.append(s)
+                    if len(s) == 2:
+                        deal_salary.append(s)
+                elif self.web == 'tc':
+                    if '面议' in s:
+                        undeal_salary.append(s)
+                    elif '元/月' in s:
+                        s = s.replace('元/月', '').split('-')
+                        s = s.append(s[0]) if len(s) == 1 else s  # 处理 XXX元/月
+                        deal_salary.append([float(s[0])/1000, float(s[1])/1000])
             else:
                 undeal_salary.append(s)
 

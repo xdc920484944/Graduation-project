@@ -20,8 +20,8 @@ def Get_content(web, data):
     def get_urls():
         '''
         获取所有职位信息的url
-        :param data:
-        :return: [url1,url2,...]
+        :param data:{搜索关键字:[职位，公司名字，地点，薪资，发布时间，职位链接，公司链接, 城市], [...]}
+        :return: [job_url1,job_url2,...], [com_url1,com_url2,...]
         '''
         w_f_value = list(data.values())[0]
         num = MAX_LINE if len(w_f_value) > MAX_LINE else len(w_f_value)
